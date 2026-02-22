@@ -1,7 +1,5 @@
 FROM ghcr.io/ultramarine-linux/gnome-bootc:main
 
-RUN rpm -e --nodeps sudo
-
 RUN --mount=type=cache,target=/var/cache dnf do -y \
     --setopt protected_packages= \
     --allowerasing \
