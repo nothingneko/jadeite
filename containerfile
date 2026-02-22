@@ -8,11 +8,18 @@ RUN --mount=type=cache,target=/var/cache dnf do -y \
     --action=install \
     zed \
     helium-browser-bin \
+    anda \
+    anda-srpm-macros \
+    katsu \
+    cargo \
+    go \
+    gcc \
+    vicinae
 
 RUN --mount=type=cache,target=/var/cache dnf do -y \
     --no-best \
     --allowerasing \
     --action=remove \
-    firefox \
+    firefox
 
 LABEL readymade.prettyname="Jadeite"
