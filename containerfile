@@ -1,4 +1,4 @@
-FROM ghcr.io/ultramarine-linux/plasma-bootc:main
+FROM ghcr.io/ultramarine-linux/gnome-bootc:main
 
 RUN rpm -e --nodeps sudo
 
