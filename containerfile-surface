@@ -1,0 +1,17 @@
+FROM ghcr.io/nothingneko/jadeite:latest
+
+RUN curl -fLo /etc/yum.repos.d/linux-surface.repo \
+    https://pkg.surfacelinux.com/fedora/linux-surface.repo
+
+RUN --mount=type=cache,target=/var/cache dnf do -y \
+    --setopt protected_packages= \
+    --allowerasing \
+    --action=install \
+    kernel-surface \
+    iptsd \
+    libwacom-surface
+
+RUN systemctl enable --now linux-surface-default-watchdog.path
+
+
+LABEL readymade.prettyname="Jadeite Surface"
