@@ -1,0 +1,14 @@
+FROM ghcr.io/nothingneko/jadeite:latest
+
+RUN for repo in kernel fedora-remix-scripts mesa flatpak u-boot; do \
+        curl -fLo /etc/yum.repos.d/group_asahi-${repo}.repo \
+            https://pagure.io/fedora-asahi/asahi-repos/raw/main/f/group_asahi-${repo}.repo; \
+    done
+
+RUN --mount=type=cache,target=/var/cache dnf do -y \
+    --setopt protected_packages= \
+    --allowerasing \
+    --action=install \
+    asahi-platform-metapackage
+
+LABEL readymade.prettyname="Jadeite Asahi"

@@ -6,21 +6,21 @@ RUN --mount=type=cache,target=/var/cache dnf install https://downloads.flox.dev/
 
 RUN ln -s /nix /var/nix
 
+RUN echo -e "[1password]\nname=1Password Stable Channel\nbaseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://downloads.1password.com/linux/keys/1password.asc" \
+    > /etc/yum.repos.d/1password.repo
+
 RUN --mount=type=cache,target=/var/cache dnf do -y \
     --setopt protected_packages= \
     --allowerasing \
     --action=install \
     zed \
+    ghostty \
     helium-browser-bin \
     anda \
     anda-srpm-macros \
-    katsu \
-    cargo \
-    go \
-    gcc \
     vicinae \
-    btop \
-    steam
+    steam \
+    1password
 
 RUN --mount=type=cache,target=/var/cache dnf do -y \
     --no-best \
