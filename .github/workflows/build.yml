@@ -7,11 +7,10 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: jadeite
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
 
 jobs:
-  build-push:
+  build-jadeite:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -28,13 +27,40 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build image
-        id: build
+      - name: Build and push jadeite
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./containerfile
           push: true
           tags: |
-            ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.IMAGE_REGISTRY }}/jadeite:latest
+            ${{ env.IMAGE_REGISTRY }}/jadeite:${{ github.sha }}
+
+  build-asahi:
+    runs-on: ubuntu-latest
+    needs: build-jadeite
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push jadeite-asahi
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./containerfile-asahi
+          push: true
+          tags: |
+            ${{ env.IMAGE_REGISTRY }}/jadeite-asahi:latest
+            ${{ env.IMAGE_REGISTRY }}/jadeite-asahi:${{ github.sha }}
