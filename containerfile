@@ -4,6 +4,8 @@ RUN --mount=type=cache,target=/var/cache rpm --import https://downloads.flox.dev
 
 RUN --mount=type=cache,target=/var/cache dnf install https://downloads.flox.dev/by-env/stable/rpm/flox-1.10.0.x86_64-linux.rpm
 
+RUN ln -s /nix /var/nix
+
 RUN --mount=type=cache,target=/var/cache dnf do -y \
     --setopt protected_packages= \
     --allowerasing \
