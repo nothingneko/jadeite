@@ -16,8 +16,6 @@ RUN --mount=type=cache,target=/var/cache dnf do -y \
     zed \
     ghostty \
     helium-browser-bin \
-    anda \
-    anda-srpm-macros \
     vicinae \
     steam \
     1password
