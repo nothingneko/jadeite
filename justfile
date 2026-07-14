@@ -8,7 +8,8 @@
 #
 # cross-arch builds need qemu-user-static + binfmt registered once per host:
 #   sudo dnf install qemu-user-static
-#   podman run --rm --privileged multiarch/qemu-user-static --reset -p yes
+#   sudo podman run --rm --privileged multiarch/qemu-user-static --reset -p yes
+# (must be real root — binfmt_misc is global and rootless podman can't register it)
 
 registry_path := env_var_or_default("REGISTRY_PATH", "ghcr.io/nothingneko/jadeite")
 version := env_var_or_default("VERSION", trim(`cat VERSION`))

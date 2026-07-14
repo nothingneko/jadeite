@@ -1,7 +1,8 @@
 ARG ARCH=amd64
 ARG HADRON_IMAGE=ghcr.io/kairos-io/hadron:v0.5.1
 
-FROM curlimages/curl:latest AS podman-static-fetch
+# runs on the build host's native arch
+FROM --platform=$BUILDPLATFORM curlimages/curl:latest AS podman-static-fetch
 ARG ARCH
 USER root
 RUN curl -fsSL -o /tmp/podman-static.tar.gz \

@@ -51,7 +51,7 @@ jobs:
       - name: register qemu for cross-arch builds
         if: matrix.variant != 'amd64'
         run: |
-          podman run --rm --privileged docker.io/multiarch/qemu-user-static --reset -p yes
+          sudo podman run --rm --privileged docker.io/multiarch/qemu-user-static --reset -p yes
 
       - name: decide whether to push
         id: gate
