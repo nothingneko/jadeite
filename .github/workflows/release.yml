@@ -1,0 +1,87 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: override version (blank = use the VERSION file)
+        required: false
+        default: ""
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  artifacts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: iso-amd64
+            variant: amd64
+            outdir: build
+          - target: raw-rpi4
+            variant: rpi4
+            outdir: build-rpi4
+          - target: raw-rpi3
+            variant: rpi3
+            outdir: build-rpi3
+    env:
+      REGISTRY_PATH: ghcr.io/nothingneko/jadeite
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: version
+        run: |
+          file_ver="$(tr -d '[:space:]' < VERSION)"
+          ver="${{ inputs.version }}"
+          [ -z "$ver" ] && ver="$file_ver"
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            tag_ver="${GITHUB_REF_NAME#v}"
+            if [ "$tag_ver" != "$file_ver" ]; then
+              echo "::error::tag $GITHUB_REF_NAME does not match VERSION file ($file_ver) — bump VERSION before tagging"
+              exit 1
+            fi
+          fi
+          echo "VERSION=$ver" >> "$GITHUB_ENV"
+          echo "building version: $ver"
+
+      - name: install podman + just
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y podman
+          curl -fsSL https://just.systems/install.sh | sudo bash -s -- --to /usr/local/bin
+
+      - name: register qemu for cross-arch builds
+        if: matrix.variant != 'amd64'
+        run: |
+          podman run --rm --privileged docker.io/multiarch/qemu-user-static --reset -p yes
+
+      - name: log in to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" \
+            | podman login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: build ${{ matrix.target }}
+        run: just ${{ matrix.target }}
+
+      - name: upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jadeite-${{ matrix.variant }}
+          path: ${{ matrix.outdir }}/*
+          if-no-files-found: error
+
+      - name: attach to release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.outdir }}/*
