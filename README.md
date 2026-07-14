@@ -1,12 +1,10 @@
 # jadeite
-when she boot on my container (ultramarine based bootc image)
+this branch (hadron) is an experimental ultralite container distro based on hadron
 
 # you pawbably shouldn't use this
-this is mostly because i wanted to use the name, you should just use ultramarine unless your serial number is NK0853
 
+this is scuffed as fuck, know what you're doing first
 
-# seriously just use ultramarine
+# SERIOUSLY
 
-## seriously, just use the dnf stuff the lab cats are cooking if you somehow only need the ultramarine toolchain, zed, and helium browser
-
-### get steam from the block
+#### no claude was used in the production of this *ite thing
