@@ -1,8 +1,0 @@
-[[customizations.user]]
-name = "jade"
-password = "jade"
-groups = ["wheel"]
-
-[[customizations.filesystem]]
-mountpoint = "/"
-minsize = "20 GiB"
