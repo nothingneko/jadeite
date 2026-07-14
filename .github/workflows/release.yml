@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   artifacts:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     permissions:
       contents: write
       packages: write
@@ -27,12 +27,15 @@ jobs:
           - target: iso-amd64
             variant: amd64
             outdir: build
+            runner: ubuntu-24.04
           - target: raw-rpi4
             variant: rpi4
             outdir: build-rpi4
+            runner: ubuntu-24.04-arm
           - target: raw-rpi3
             variant: rpi3
             outdir: build-rpi3
+            runner: ubuntu-24.04-arm
     env:
       REGISTRY_PATH: ghcr.io/nothingneko/jadeite
     steps:
@@ -59,11 +62,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y podman
           curl -fsSL https://just.systems/install.sh | sudo bash -s -- --to /usr/local/bin
-
-      - name: register qemu for cross-arch builds
-        if: matrix.variant != 'amd64'
-        run: |
-          sudo podman run --rm --privileged docker.io/multiarch/qemu-user-static --reset -p yes
 
       - name: log in to GHCR
         run: |
