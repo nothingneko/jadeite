@@ -1,5 +1,5 @@
 # jadeite
-this branch (hadron) is an experimental ultralite container distro based on hadron
+this branch (hadron) is an experimental ultralite container host based on hadron. balenaos but good
 
 # you pawbably shouldn't use this
 
