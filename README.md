@@ -2,8 +2,7 @@
   <img src="jadeite.png" alt="jadeite" />
 </p>
 
-# jadeite
-this branch (hadron) is an experimental ultralite container host based on hadron. balenaos but good
+this branch (hadron) is an experimental ultralite container host based on hadron. kinda like balenaos but good.
 
 # you pawbably shouldn't use this
 
