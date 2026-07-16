@@ -25,6 +25,10 @@ RUN mkdir -p /tmp/podman-extract && \
     sed -i 's|/usr/local/bin/fuse-overlayfs|/usr/bin/fuse-overlayfs|' /etc/containers/storage.conf && \
     rm -rf /tmp/podman-static.tar.gz /tmp/podman-extract
 
+RUN mkdir -p /etc/containers/containers.conf.d && \
+    printf '[engine]\nhelper_binaries_dir = ["/usr/lib/podman", "/usr/libexec/podman", "/usr/bin", "/usr/sbin"]\n' \
+    > /etc/containers/containers.conf.d/99-jadeite-helpers.conf
+
 RUN mkdir -p /etc/systemd/system/sockets.target.wants && \
     ln -sf /usr/lib/systemd/system/podman.socket \
         /etc/systemd/system/sockets.target.wants/podman.socket || true
