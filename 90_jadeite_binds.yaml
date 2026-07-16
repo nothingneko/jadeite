@@ -1,0 +1,10 @@
+name: "jadeite persistent paths"
+stages:
+  rootfs:
+    - if: '[ ! -f "/run/cos/recovery_mode" ] && [ ! -e "/run/cos/uki_install_mode" ] && [ ! -e "/run/cos/autoreset_mode" ]'
+      only_os: "Hadron.*"
+      name: "extra layout configuration for active/passive mode"
+      environment_file: /run/cos/extra-layout.env
+      environment:
+        PERSISTENT_STATE_PATHS: >-
+          /var/lib/containers

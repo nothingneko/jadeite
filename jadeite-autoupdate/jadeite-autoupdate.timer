@@ -1,0 +1,10 @@
+[Unit]
+Description=jadeite autoupdate
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=7d
+Persistent=true
+
+[Install]
+WantedBy=timers.target

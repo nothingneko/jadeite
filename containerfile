@@ -17,16 +17,13 @@ ARG MODEL=generic
 ARG TRUSTED_BOOT=false
 
 COPY --from=podman-static-fetch /tmp/podman-static.tar.gz /tmp/podman-static.tar.gz
+
 RUN mkdir -p /tmp/podman-extract && \
     tar -xzf /tmp/podman-static.tar.gz -C /tmp/podman-extract --strip-components=1 && \
-    cp -a /tmp/podman-extract/usr/. /usr/ && \
+    cp -a /tmp/podman-extract/usr/local/. /usr/ && \
     cp -a /tmp/podman-extract/etc/. /etc/ && \
-    rm -rf /tmp/podman-static.tar.gz /tmp/podman-extract && \
-    for b in podman crun conmon netavark aardvark-dns catatonit fuse-overlayfs pasta; do \
-      if [ -x "/usr/local/bin/$b" ] && [ ! -e "/usr/bin/$b" ]; then \
-        ln -s "/usr/local/bin/$b" "/usr/bin/$b"; \
-      fi; \
-    done
+    sed -i 's|/usr/local/bin/fuse-overlayfs|/usr/bin/fuse-overlayfs|' /etc/containers/storage.conf && \
+    rm -rf /tmp/podman-static.tar.gz /tmp/podman-extract
 
 RUN mkdir -p /etc/systemd/system/sockets.target.wants && \
     ln -sf /usr/lib/systemd/system/podman.socket \
@@ -36,11 +33,21 @@ RUN --mount=type=bind,from=kairos-init,src=/kairos-init,dst=/kairos-init \
     /kairos-init -l debug -s install -m "${MODEL}" -t "${TRUSTED_BOOT}" --version "${VERSION}" && \
     /kairos-init -l debug -s init    -m "${MODEL}" -t "${TRUSTED_BOOT}" --version "${VERSION}"
 
-RUN sed -i 's/set display_name="Kairos"/set display_name="jadeite"/' /etc/cos/grub.cfg && \
-    printf '\n  __ _  __| |  ___  (_) |_ ___ \n / _` |/ _` | / _ \\ | | __/ _ \\\n| (_| | (_| ||  __/ | | ||  __/\n \\__,_|\\__,_| \\___| |_|\\__\\___|\n\n' > /etc/issue.d/01-KAIROS && \
-    printf 'welcome to jadeite!\n\npodman host for embedded devices\n\nbuilt with love in minneapolis (by catgirls! :3)\n₍^. .^₎⟆' > /etc/motd && \
-    mkdir -p /etc/kairos/branding && \
-    printf 'jadeite installer.\n' > /etc/kairos/branding/interactive_install_text && \
-    printf 'jadeite recovery mode\n' > /etc/kairos/branding/recovery_text && \
-    printf 'welcome to jadeite!\nnode will automatically reset in a seccy.\n\npress any key to cancel. to do it now run '"'"'kairos reset'"'"'.\n\resetting in 60 seconds...\n' > /etc/kairos/branding/reset_text && \
-    printf 'welcome to jadeite!\nenrollment is starting.\n' > /etc/kairos/branding/install_text
+COPY 90_jadeite_binds.yaml /system/oem/90_jadeite_binds.yaml
+
+RUN sed -i 's/set display_name="Kairos"/set display_name="jadeite"/' /etc/cos/grub.cfg
+
+
+COPY branding/os-release          /etc/os-release
+COPY branding/issue               /etc/issue.d/01-KAIROS
+COPY branding/motd                /etc/motd
+COPY branding/interactive_install /etc/kairos/branding/interactive_install_text
+COPY branding/recovery            /etc/kairos/branding/recovery_text
+COPY branding/reset               /etc/kairos/branding/reset_text
+COPY branding/install             /etc/kairos/branding/install_text
+
+COPY jadeite-autoupdate/jadeite-autoupdate.sh /usr/bin/jadeite-autoupdate
+COPY jadeite-autoupdate/jadeite-autoupdate.service /etc/systemd/system/jadeite-autoupdate.service
+COPY jadeite-autoupdate/jadeite-autoupdate.timer /etc/systemd/system/jadeite-autoupdate.timer
+RUN chmod +x /usr/bin/jadeite-autoupdate && \
+    systemctl enable jadeite-autoupdate.timer

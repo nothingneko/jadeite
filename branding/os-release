@@ -1,0 +1,7 @@
+NAME="Jadeite Hadron"
+PRETTY_NAME="Jadeite Hadron"
+ID=jadeite
+ID_LIKE="hadron"
+VARIANT="jadeite"
+VERSION_ID="v0.5.1"
+BUILD_ID=rolling

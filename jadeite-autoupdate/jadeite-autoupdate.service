@@ -1,0 +1,8 @@
+[Unit]
+Description=jadeite autoupdate
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/jadeite-autoupdate
