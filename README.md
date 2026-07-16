@@ -2,15 +2,14 @@
   <img src="jadeite.png" alt="jadeite" />
 </p>
 
-this branch (hadron) is an experimental ultralite container host based on hadron. kinda like balenaos but good.
+jadeite is an experimental ultralite container host based on hadron and kairos. kinda like balenaos but good.
 
-# you pawbably shouldn't use this
+## you pawbably shouldn't use this
 
-this is scuffed as fuck, know what you're doing first
+jadeite is new and experimental, as is hadron. bluntly this is very scuffed, know what you're doing first.
 
-# SERIOUSLY
-
-#### no claude was used in the production of this *ite thing
+## real docs coming soon (i promise)
+### no claude was used in the production of this *ite thing
 
 <p align="center">
   <img src="bottomofreadme.gif" alt="jadeite" />
